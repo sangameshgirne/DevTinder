@@ -1,20 +1,19 @@
 const express=require("express");
 const app=express();
+const {adminauth,userauth}=require("./middleware/auth");
 
-app.use("/user",
-[(req,res,next)=>{
-console.log("handle the route user1");
-res.send("Response1");
-next();
-},
+//app.use("/admin",adminauth);
+app.get("/user",userauth,(req,res)=>{
+    res.send("user data sent");
+})
+app.get("/admin/getalldata",adminauth,(req,res)=>{
+ res.send("send all data");
+})
 
-(req,res,next)=>{
-console.log("handle the route user2");
-res.send("Response2");
-next();
-}],
-
+app.get("/admin/deleteuser",adminauth,(req,res)=>{
+   res.send("deleted user");}
 )
+
 
 
 
