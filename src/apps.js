@@ -1,22 +1,34 @@
 const express=require("express");
 const app=express();
-const {adminauth,userauth}=require("./middleware/auth");
+const {connectdb}=require("./config/database")
 
-//app.use("/admin",adminauth);
-app.get("/user",userauth,(req,res)=>{
-    res.send("user data sent");
+const jwt=require("jsonwebtoken")
+const cookieParser = require("cookie-parser");
+
+const authRouter=require("./router/authrouter")
+const profileRouter=require("./router/profile")
+const requestRouter=require("./router/request")
+const userRouter=require("./router/userRouter")
+
+app.use(cookieParser());
+app.use(express.json())
+
+app.use("/",authRouter);
+app.use("/",profileRouter);
+app.use("/",requestRouter);
+app.use("/",userRouter);
+
+
+//connecting server to database
+connectdb()
+.then(()=>{
+    console.log("DB connected successfully");
+    app.listen(7777,()=>{
+    console.log("server is listening");}
+);
 })
-app.get("/admin/getalldata",adminauth,(req,res)=>{
- res.send("send all data");
+.catch(err=>{
+    console.error("data base not connected")
 })
 
-app.get("/admin/deleteuser",adminauth,(req,res)=>{
-   res.send("deleted user");}
-)
-
-
-
-
-app.listen(7777,()=>{
-    console.log("server is listening");
-});
+ 
